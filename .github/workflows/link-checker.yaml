@@ -2,18 +2,17 @@ name: Link checker
 
 on:
   schedule:
-  - cron: '0 0 1 * *'
+    - cron: "0 0 1 * *"
   workflow_dispatch:
     branches:
       - main
 
-name: Check markdown links
 jobs:
   linkChecker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Link Checker
         uses: peter-evans/link-checker@v1
 
