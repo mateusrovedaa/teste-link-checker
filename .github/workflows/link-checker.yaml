@@ -1,36 +1,16 @@
-name: Link checker
-
 on:
-  repository_dispatch:
-  workflow_dispatch:
   schedule:
-    - cron: "00 18 * * *"
+    - cron: 0 0 1 * * # run monthly
+  repository_dispatch: # run manually
+    types: [check-link]
+  # push:
+  # ...
 
+name: Broken Link Check
 jobs:
-  linkChecker:
+  check:
+    name: Broken Link Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Restore lychee cache
-        uses: actions/cache@v3
-        with:
-          path: .lycheecache
-          key: cache-lychee-${{ github.sha }}
-          restore-keys: cache-lychee-
-
-      - name: Link Checker
-        id: lychee
-        uses: lycheeverse/lychee-action@v1.5.1
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        with:
-          args: "--cache --max-cache-age 1d"
-
-      - name: Create Issue From File
-        if: steps.lychee.outputs.exit_code != 0
-        uses: peter-evans/create-issue-from-file@v4
-        with:
-          title: Link Checker Report
-          content-filepath: ./lychee/out.md
-          labels: report, automated issue
+      - name: Broken Link Check
+        uses: technote-space/broken-link-checker-action@v2
