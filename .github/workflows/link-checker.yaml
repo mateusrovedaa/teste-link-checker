@@ -1,17 +1,24 @@
+name: Link checker
+
 on:
   schedule:
-    - cron: 0 0 1 * * # run monthly
+    - cron: 0 0 1 * *
   workflow_dispatch:
-  repository_dispatch: # run manually
-    types: [check-link]
-  # push:
-  # ...
+    branches:
+      - main
 
-name: Broken Link Check
 jobs:
-  check:
-    name: Broken Link Check
+  linkChecker:
     runs-on: ubuntu-latest
     steps:
-      - name: Broken Link Check
-        uses: technote-space/broken-link-checker-action@v2
+      - uses: actions/checkout@v2
+
+      - name: Link Checker
+        uses: peter-evans/link-checker@v1
+
+      - name: Create Issue From File
+        uses: peter-evans/create-issue-from-file@v2
+        with:
+          title: Link Checker Report
+          content-filepath: ./link-checker/out.md
+          labels: report, automated issue
